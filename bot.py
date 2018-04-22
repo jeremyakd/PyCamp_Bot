@@ -3,7 +3,9 @@ import logging
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
                           CallbackQueryHandler)
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-import vote
+import voting
+
+global result
 
 updater = Updater(token='357811653:AAFaLB_tXns3LchYECBNyy-Swa6h4FbGEDc')
 dispatcher = updater.dispatcher
@@ -26,11 +28,8 @@ def start(bot, update):
 
 
 def button(bot,update):
+    global query
     query = update.callback_query
-    if query.data == "si":
-        result = 'Te interesa el proyecto'
-    else:
-        result = 'No te interesa el proyecto'
     bot.edit_message_text(text=result,
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
@@ -47,9 +46,8 @@ def echo(bot, update):
 echo_handler = MessageHandler(Filters.text, echo)
 dispatcher.add_handler(echo_handler)
 
-updater.dispatcher.add_handler(CommandHandler('vote', vote.vote))
+result = updater.dispatcher.add_handler(CommandHandler('vote', voting.vote))
 updater.dispatcher.add_handler(CallbackQueryHandler(button))
-
 
 
 def error(bot, update, error):
