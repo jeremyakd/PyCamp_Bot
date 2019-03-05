@@ -114,6 +114,16 @@ def end_voting(bot, update):
     else:
         update.message.reply_text("La votación ya estaba cerrada")
 
+def voting_results(bot, update):
+    projects = Project.select()
+    votes = Vote.select().filter(interest=True)
+    reply = ""
+    for project in projects:
+        reply += "El proyecto {} tiene {} votos.\n".format(
+            project.name, 
+            votes.filter(project=project).count()
+        )
+    update.message.reply_text(reply)
 
 def set_handlers(updater):
     updater.dispatcher.add_handler(
@@ -124,3 +134,5 @@ def set_handlers(updater):
             CommandHandler('votar', vote))
     updater.dispatcher.add_handler(
             CommandHandler('terminar_votacion', end_voting))
+    updater.dispatcher.add_handler(
+            CommandHandler('resultados_votacion', voting_results))
