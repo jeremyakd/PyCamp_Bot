@@ -133,12 +133,17 @@ def add_pycampista_to_pycamp(bot, update):
         pycamp = get_pycamp_by_name(parameters[1])
     else:
         is_active, pycamp = get_active_pycamp()
-    PycampistaAtPycamp.get_or_create(pycamp=pycamp, pycampista=pycampista)
-
-    bot.send_message(
-        chat_id=update.message.chat_id,
-        text="El pycampista {} fue agregado al pycamp {}".format(username,
-                                                                 pycamp.headquarters))
+    if is_active:
+        PycampistaAtPycamp.get_or_create(pycamp=pycamp, pycampista=pycampista)
+        bot.send_message(
+            chat_id=update.message.chat_id,
+            text="El pycampista {} fue agregado al pycamp {}".format(username,
+                                                                    pycamp.headquarters))
+    else:
+        bot.send_message(
+            chat_id=update.message.chat_id,
+            text="No se encontró Pycamp activa."
+        )
 
 
 def list_pycamps(bot, update):
